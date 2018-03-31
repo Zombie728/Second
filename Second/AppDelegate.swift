@@ -6,6 +6,7 @@
 //  Copyright © 2018 Sobko Evgeniy. All rights reserved.
 //
 
+import Foundation
 import UIKit
 
 @UIApplicationMain
@@ -15,13 +16,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        func setupTabBarProperties(forTabBarController tabBarController: UITabBarController) {
+            tabBarController.tabBar.tintColor = #colorLiteral(red: 0.7497641444, green: 0.02775303088, blue: 0.1031884477, alpha: 1)
+            UITabBarItem.appearance().setTitleTextAttributes([.foregroundColor : #colorLiteral(red: 0.3136630654, green: 0.3135992587, blue: 0.3218442202, alpha: 1)], for: .selected)
+            tabBarController.tabBar.backgroundColor = UIColor.white.withAlphaComponent(0.95)
+            tabBarController.tabBar.backgroundImage = UIImage()
+            tabBarController.tabBar.shadowImage = UIImage()
+        }
+        
+        func viewControllersForMainTabBar() -> [UIViewController] {
+            var viewControllers = [UIViewController]()
+            var viewController: UIViewController = HomeCollectionViewController(collectionViewLayout: PictureCollectionViewLayout())
+            viewControllers.append(viewController)
+            for controllerTitle in ["Explore", "Notifications", "Saved"] {
+                viewController = UIViewController()
+                viewController.view.backgroundColor = .white
+                viewController.tabBarItem = UITabBarItem(title: controllerTitle, image: UIImage(imageLiteralResourceName: controllerTitle), selectedImage: nil)
+                viewControllers.append(viewController)
+            }
+            return viewControllers
+        }
+        
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        let mainMenuViewController = UITabBarController()
+        setupTabBarProperties(forTabBarController: mainMenuViewController)
+        mainMenuViewController.viewControllers = viewControllersForMainTabBar()
+        window.rootViewController = mainMenuViewController
+        window.makeKeyAndVisible()
+        
+        self.window = window
         return true
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+        // Use this m/Users/Zombie/Swift/Ya/Second/Second.xcodeprojethod to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
