@@ -10,9 +10,9 @@ import UIKit
 
 class PictureCollectionViewLayout: UICollectionViewLayout {
 
-    var delegate: HomeCollectionViewController!
+    weak var delegate: HomeCollectionViewController?
     var space: CGFloat = 8
-    var numberOfColumns = UIDevice.current.userInterfaceIdiom == .pad ? 4 : 2
+    var numberOfColumns = 0//UIDevice.current.userInterfaceIdiom == .pad ? 4 : 2
     
     private var allAttributes = [UICollectionViewLayoutAttributes]()
 
@@ -20,12 +20,13 @@ class PictureCollectionViewLayout: UICollectionViewLayout {
     
     override func prepare() {
         allAttributes = []
+        numberOfColumns = delegate!.traitCollection.horizontalSizeClass == .compact ? 2 : 3
         let width = ((collectionView!.bounds.width) - space * CGFloat(numberOfColumns - 1)) / CGFloat(numberOfColumns) // Ширина одного столбца
         let horizontalCoordinatesOfColumns: [CGFloat] = (0..<numberOfColumns).map { CGFloat($0) * (width + space) } // Горизонтальные координаты левых границ столбцов
         var verticalCoordinatesInColumns = [CGFloat](repeating: 0, count: numberOfColumns) // Вертикальные координаты нижних границ столбцов (+ отступ)
         for index in 0..<collectionView!.numberOfItems(inSection: 0) {
             let indexPath = IndexPath(item: index, section: 0)
-            let size = CGSize(width: width, height: delegate.heightForItemAtIndexPath(indexPath)) // Размер ячейки
+            let size = CGSize(width: width, height: delegate!.heightForItemAtIndexPath(indexPath)) // Размер ячейки
             let sortedVerticalCoordinatesInColumns = verticalCoordinatesInColumns.enumerated().sorted {
                 if $0.element < $1.element { return true } // Сортировка столбцов по возрастанию их высоты, то есть нахождение самого короткого
                 else if $0.element > $1.element { return false }
@@ -38,6 +39,7 @@ class PictureCollectionViewLayout: UICollectionViewLayout {
             allAttributes.append(attributes)
             verticalCoordinatesInColumns[lowestColumnIndex] += size.height + space // Изменение высоты столбца, то есть сдвиг его нижней границы
         }
+        collectionViewContentSize.width = collectionView!.bounds.width
         collectionViewContentSize.height = verticalCoordinatesInColumns.max()!
     }
     

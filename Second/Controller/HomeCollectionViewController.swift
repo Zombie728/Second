@@ -22,6 +22,7 @@ class HomeCollectionViewController: UICollectionViewController {
     
     let searchFieldView = SearchFieldView()
     lazy var layout = collectionViewLayout as! PictureCollectionViewLayout
+    private var viewWidth: CGFloat = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,12 +53,15 @@ class HomeCollectionViewController: UICollectionViewController {
              collectionView!.trailingAnchor.constraint(equalTo: margins.trailingAnchor)]
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     override func viewDidLayoutSubviews() {
         searchFieldView.layer.cornerRadius = searchFieldView.bounds.height / 5
-        layout.prepare()
         for cell in collectionView?.visibleCells as! [PictureCollectionViewCell] {
             cell.calculateCornerRadius()
+        }
+        if viewWidth != view.bounds.width {
+            layout.invalidateLayout()
+            viewWidth = view.bounds.width
         }
     }
     
