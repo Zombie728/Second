@@ -14,13 +14,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         func setupTabBarProperties(forTabBarController tabBarController: UITabBarController) {
-            tabBarController.tabBar.tintColor = #colorLiteral(red: 0.7497641444, green: 0.02775303088, blue: 0.1031884477, alpha: 1)
-            UITabBarItem.appearance().setTitleTextAttributes([.foregroundColor : #colorLiteral(red: 0.3136630654, green: 0.3135992587, blue: 0.3218442202, alpha: 1)], for: .selected)
-            tabBarController.tabBar.backgroundColor = UIColor.white.withAlphaComponent(0.95)
+            tabBarController.tabBar.tintColor = Constants.tabBarSelectedImageColor
+            UITabBarItem.appearance().setTitleTextAttributes([.foregroundColor : Constants.tabBarSelectedTextColor], for: .selected)
+            tabBarController.tabBar.backgroundColor = Constants.tabBarBackgroundColor.withAlphaComponent(Constants.tabBarBackgroundAlpha)
             tabBarController.tabBar.backgroundImage = UIImage()
             tabBarController.tabBar.shadowImage = UIImage()
         }
@@ -29,9 +28,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             var viewControllers = [UIViewController]()
             var viewController: UIViewController = HomeCollectionViewController(collectionViewLayout: PictureCollectionViewLayout())
             viewControllers.append(viewController)
-            for controllerTitle in ["Explore", "Notifications", "Saved"] {
+            for controllerTitle in Constants.controllersTitles {
                 viewController = UIViewController()
-                viewController.view.backgroundColor = .white
+                viewController.view.backgroundColor = Constants.backgroundColorOfViews
                 viewController.tabBarItem = UITabBarItem(title: controllerTitle, image: UIImage(imageLiteralResourceName: controllerTitle), selectedImage: nil)
                 viewControllers.append(viewController)
             }
@@ -71,6 +70,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
+    enum Constants {
+        static let tabBarSelectedImageColor = #colorLiteral(red: 0.7497641444, green: 0.02775303088, blue: 0.1031884477, alpha: 1)
+        static let tabBarSelectedTextColor = #colorLiteral(red: 0.3136630654, green: 0.3135992587, blue: 0.3218442202, alpha: 1)
+        static let tabBarBackgroundColor = UIColor.white
+        static let tabBarBackgroundAlpha: CGFloat = 0.95
+        static let controllersTitles = ["Explore", "Notifications", "Saved"]
+        static let backgroundColorOfViews = UIColor.white
+    }
+    
 }
 

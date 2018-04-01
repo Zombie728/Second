@@ -9,52 +9,62 @@
 import UIKit
 
 class PictureCollectionViewCell: UICollectionViewCell {
-    let imageView = UIImageView()
-    let buttonWithManyPoints = UIButton()
-
-    static let buttonHeight: CGFloat = {
-        let button = UIButton()
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 5)
-        return button.intrinsicContentSize.height
+    
+    lazy var imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = Constants.imageViewCornerRadius
+        return imageView
+    }()
+    lazy var buttonOfActions: UIButton = {
+        let buttonOfActions = UIButton()
+        buttonOfActions.titleLabel?.font = UIFont.systemFont(ofSize: Constants.buttonFontSize)
+        buttonOfActions.setTitle(Constants.buttonTitle, for: .normal)
+        buttonOfActions.setTitleColor(Constants.buttonTitleColor, for: .normal)
+        return buttonOfActions
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setupSubviews()
-        setupConstrains()
+        setup()
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        setupSubviews()
-        setupConstrains()
-    }
-
-    private func setupSubviews() {
-        addSubview(imageView)
-        addSubview(buttonWithManyPoints)
-        
-        imageView.clipsToBounds = true
-        buttonWithManyPoints.titleLabel?.font = UIFont.systemFont(ofSize: 5)
-        buttonWithManyPoints.setTitle("●●●", for: .normal)
-        buttonWithManyPoints.setTitleColor(#colorLiteral(red: 0.4901400805, green: 0.4902282953, blue: 0.4901344776, alpha: 1), for: .normal)
+        setup()
     }
     
-    private func setupConstrains() {
+    private func setup() {
+        setupSubviews()
+        setupConstraints()
+    }
+    
+    private func setupSubviews() {
+        addSubview(imageView)
+        addSubview(buttonOfActions)
+    }
+    
+    private func setupConstraints() {
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        buttonWithManyPoints.translatesAutoresizingMaskIntoConstraints = false
-        let constraints =
-            [imageView.topAnchor.constraint(equalTo: topAnchor),
-             imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
-             imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
-             buttonWithManyPoints.topAnchor.constraint(equalTo: imageView.bottomAnchor),
-             buttonWithManyPoints.bottomAnchor.constraint(equalTo: bottomAnchor),
-             buttonWithManyPoints.trailingAnchor.constraint(equalTo: trailingAnchor)]
+        buttonOfActions.translatesAutoresizingMaskIntoConstraints = false
+        let constraints = [
+            imageView.topAnchor.constraint(equalTo: topAnchor),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            buttonOfActions.topAnchor.constraint(equalTo: imageView.bottomAnchor),
+            buttonOfActions.bottomAnchor.constraint(equalTo: bottomAnchor),
+            buttonOfActions.trailingAnchor.constraint(equalTo: trailingAnchor),
+            buttonOfActions.heightAnchor.constraint(equalToConstant: Constants.buttonHeight),
+        ]
         NSLayoutConstraint.activate(constraints)
     }
 
-    func calculateCornerRadius() {
-        imageView.layer.cornerRadius = bounds.width / 20
+    enum Constants {
+        static let imageViewCornerRadius: CGFloat = 8
+        static let buttonFontSize: CGFloat = 5
+        static let buttonTitle = "●●●"
+        static let buttonTitleColor = #colorLiteral(red: 0.4901400805, green: 0.4902282953, blue: 0.4901344776, alpha: 1)
+        static let buttonHeight: CGFloat = 18
     }
-
+    
 }

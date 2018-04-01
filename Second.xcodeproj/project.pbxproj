@@ -72,6 +72,7 @@
 			isa = PBXGroup;
 			children = (
 				E03CEF86206F7C5B00796769 /* HomeCollectionViewController.swift */,
+				E03CEF97206FE1D600796769 /* PictureCollectionViewLayout.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -80,7 +81,6 @@
 			isa = PBXGroup;
 			children = (
 				E03CEF8C206FAB1600796769 /* SearchFieldView.swift */,
-				E03CEF97206FE1D600796769 /* PictureCollectionViewLayout.swift */,
 				E03CEF91206FBF8000796769 /* PictureCollectionViewCell.swift */,
 			);
 			path = View;

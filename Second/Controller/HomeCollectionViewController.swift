@@ -12,55 +12,68 @@ class HomeCollectionViewController: UICollectionViewController {
     
     override init(collectionViewLayout layout: UICollectionViewLayout) {
         super.init(collectionViewLayout: layout)
-        tabBarItem = UITabBarItem(title: "Home", image: UIImage(imageLiteralResourceName: "Home"), selectedImage: nil)
+        setupTabBarItem()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        tabBarItem = UITabBarItem(title: "Home", image: UIImage(imageLiteralResourceName: "Home"), selectedImage: nil)
+        setupTabBarItem()
     }
     
-    let searchFieldView = SearchFieldView()
-    lazy var layout = collectionViewLayout as! PictureCollectionViewLayout
+    private func setupTabBarItem() {
+        tabBarItem = UITabBarItem(title: Constants.tabBarItemTitle, image: UIImage(imageLiteralResourceName: Constants.tabBarItemImageName), selectedImage: nil)
+    }
+    
+    lazy var searchFieldView: SearchFieldView = {
+        let searchFieldView = SearchFieldView()
+        searchFieldView.backgroundColor = Constants.searchFieldViewBackgroundColor
+        searchFieldView.layer.cornerRadius = Constants.searchFieldViewCornerRadius
+        return searchFieldView
+    }()
+    lazy var layout = collectionViewLayout as? PictureCollectionViewLayout ?? PictureCollectionViewLayout()
     private var viewWidth: CGFloat = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.collectionView!.register(PictureCollectionViewCell.self, forCellWithReuseIdentifier: "PictureCollectionViewCell")
+        self.collectionView?.register(PictureCollectionViewCell.self, forCellWithReuseIdentifier: Constants.cellReuseIdentifier)
         layout.delegate = self
+        setupBackgroundColors()
         setupSubviews()
         setupConstraints()
     }
     
+    private func setupBackgroundColors() {
+        view.backgroundColor = Constants.viewBackgroundColor
+        collectionView?.backgroundColor = Constants.viewBackgroundColor
+    }
+    
     private func setupSubviews() {
         view.addSubview(searchFieldView)
-        view.backgroundColor = .white
-        collectionView!.backgroundColor = .white
-        searchFieldView.backgroundColor = #colorLiteral(red: 0.9371530414, green: 0.9373135567, blue: 0.9371429086, alpha: 1)
     }
     
     private func setupConstraints() {
-        collectionView!.translatesAutoresizingMaskIntoConstraints = false
-        searchFieldView.translatesAutoresizingMaskIntoConstraints = false
-        let margins = view.layoutMarginsGuide
-        let constraints =
-            [searchFieldView.topAnchor.constraint(equalTo: margins.topAnchor),
-             searchFieldView.leadingAnchor.constraint(equalTo: margins.leadingAnchor),
-             searchFieldView.bottomAnchor.constraint(equalTo: collectionView!.topAnchor, constant: -8),
-             searchFieldView.trailingAnchor.constraint(equalTo: margins.trailingAnchor),
-             collectionView!.leadingAnchor.constraint(equalTo: margins.leadingAnchor),
-             collectionView!.bottomAnchor.constraint(equalTo: margins.bottomAnchor, constant: tabBarController!.tabBar.bounds.height),
-             collectionView!.trailingAnchor.constraint(equalTo: margins.trailingAnchor)]
-        NSLayoutConstraint.activate(constraints)
+        if let (cv, tb) = (collectionView, tabBarController?.tabBar) as? (UICollectionView, UITabBar) {
+            cv.translatesAutoresizingMaskIntoConstraints = false
+            searchFieldView.translatesAutoresizingMaskIntoConstraints = false
+            let margins = view.layoutMarginsGuide
+            let constraints = [
+                searchFieldView.topAnchor.constraint(equalTo: margins.topAnchor),
+                searchFieldView.leadingAnchor.constraint(equalTo: margins.leadingAnchor),
+                searchFieldView.bottomAnchor.constraint(equalTo: cv.topAnchor,
+                                                        constant: -Constants.spaceBetweenSearchFieldViewAndCollectionView),
+                searchFieldView.trailingAnchor.constraint(equalTo: margins.trailingAnchor),
+                cv.leadingAnchor.constraint(equalTo: margins.leadingAnchor),
+                cv.bottomAnchor.constraint(equalTo: margins.bottomAnchor,
+                                           constant: tb.bounds.height),
+                cv.trailingAnchor.constraint(equalTo: margins.trailingAnchor)
+            ]
+            NSLayoutConstraint.activate(constraints)
+        }
     }
 
     override func viewDidLayoutSubviews() {
-        searchFieldView.layer.cornerRadius = searchFieldView.bounds.height / 5
-        for cell in collectionView?.visibleCells as! [PictureCollectionViewCell] {
-            cell.calculateCornerRadius()
-        }
         if viewWidth != view.bounds.width {
-            layout.invalidateLayout()
+            layout.prepare(forAnimatedBoundsChange: .zero)
             viewWidth = view.bounds.width
         }
     }
@@ -72,18 +85,35 @@ class HomeCollectionViewController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return Picture.all.count
     }
-    
-    func heightForItemAtIndexPath(_ indexPath: IndexPath) -> CGFloat {
-        let width = ((collectionView?.bounds.width)! - layout.space * CGFloat(layout.numberOfColumns - 1)) / CGFloat(layout.numberOfColumns)
-        let image = UIImage(imageLiteralResourceName: Picture.all[indexPath.item].imageName)
-        let ratio = image.size.height / image.size.width
-        return width * ratio + PictureCollectionViewCell.buttonHeight
-    }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PictureCollectionViewCell", for: indexPath) as! PictureCollectionViewCell
-        cell.imageView.image = UIImage(imageLiteralResourceName: Picture.all[indexPath.item].imageName)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PictureCollectionViewCell", for: indexPath)
+        if let pictureCell = cell as? PictureCollectionViewCell {
+            pictureCell.imageView.image = UIImage(imageLiteralResourceName: Picture.all[indexPath.item].imageName)
+        }
         return cell
     }
 
+    enum Constants {
+        static let tabBarItemTitle = "Home"
+        static let tabBarItemImageName = "Home"
+        static let cellReuseIdentifier = "PictureCollectionViewCell"
+        static let viewBackgroundColor = UIColor.white
+        static let searchFieldViewBackgroundColor = #colorLiteral(red: 0.9371530414, green: 0.9373135567, blue: 0.9371429086, alpha: 1)
+        static let searchFieldViewCornerRadius: CGFloat = 8
+        static let spaceBetweenSearchFieldViewAndCollectionView: CGFloat = 8
+    }
+    
+}
+
+extension HomeCollectionViewController: PictureCollectionViewLayoutDelegate {
+    func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
+        var cellWidth: CGFloat = 0
+        if let collectionViewWidth = self.collectionView?.bounds.width {
+            cellWidth = collectionViewWidth / CGFloat(layout.numberOfColumns) - 2 * PictureCollectionViewLayout.Constants.cellPadding
+        }
+        let image = UIImage(imageLiteralResourceName: Picture.all[indexPath.item].imageName)
+        let ratio = image.size.height / image.size.width
+        return cellWidth * ratio + PictureCollectionViewCell.Constants.buttonHeight
+    }
 }
