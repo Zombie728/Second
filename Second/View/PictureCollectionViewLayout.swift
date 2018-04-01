@@ -12,7 +12,7 @@ class PictureCollectionViewLayout: UICollectionViewLayout {
 
     weak var delegate: HomeCollectionViewController?
     var space: CGFloat = 8
-    var numberOfColumns = 0//UIDevice.current.userInterfaceIdiom == .pad ? 4 : 2
+    var numberOfColumns = 0
     
     private var allAttributes = [UICollectionViewLayoutAttributes]()
 
