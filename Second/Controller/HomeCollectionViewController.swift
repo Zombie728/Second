@@ -22,7 +22,8 @@ class HomeCollectionViewController: UICollectionViewController {
     
     private func setupTabBarItem() {
         tabBarItem = UITabBarItem(title: Constants.tabBarItemTitle,
-                                  image: UIImage(named: Constants.tabBarItemImageName), selectedImage: nil)
+                                  image: UIImage(named: Constants.tabBarItemImageName),
+                                  selectedImage: nil)
     }
     
     lazy var searchFieldView: SearchFieldView = {
@@ -37,8 +38,8 @@ class HomeCollectionViewController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.collectionView?.register(PictureCollectionViewCell.self,
-                                      forCellWithReuseIdentifier: Constants.cellReuseIdentifier)
+        collectionView?.register(PictureCollectionViewCell.self,
+                                 forCellWithReuseIdentifier: Constants.cellReuseIdentifier)
         layout.delegate = self
         setupBackgroundColors()
         setupSubviews()

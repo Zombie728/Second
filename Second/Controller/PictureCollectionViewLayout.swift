@@ -89,7 +89,7 @@ class PictureCollectionViewLayout: UICollectionViewLayout {
 extension Array where Element : Comparable {
     func indexOfMinimum() -> Int {
         var indexOfMinimum = 0
-        for (index, element) in self.enumerated() where element < self[indexOfMinimum] {
+        for (index, element) in enumerated() where element < self[indexOfMinimum] {
             indexOfMinimum = index
         }
         return indexOfMinimum
