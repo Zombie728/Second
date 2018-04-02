@@ -21,11 +21,13 @@ class HomeCollectionViewController: UICollectionViewController {
     }
     
     private func setupTabBarItem() {
-        tabBarItem = UITabBarItem(title: Constants.tabBarItemTitle, image: UIImage(imageLiteralResourceName: Constants.tabBarItemImageName), selectedImage: nil)
+        tabBarItem = UITabBarItem(title: Constants.tabBarItemTitle,
+                                  image: UIImage(named: Constants.tabBarItemImageName), selectedImage: nil)
     }
     
     lazy var searchFieldView: SearchFieldView = {
         let searchFieldView = SearchFieldView()
+        searchFieldView.translatesAutoresizingMaskIntoConstraints = false
         searchFieldView.backgroundColor = Constants.searchFieldViewBackgroundColor
         searchFieldView.layer.cornerRadius = Constants.searchFieldViewCornerRadius
         return searchFieldView
@@ -35,10 +37,12 @@ class HomeCollectionViewController: UICollectionViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.collectionView?.register(PictureCollectionViewCell.self, forCellWithReuseIdentifier: Constants.cellReuseIdentifier)
+        self.collectionView?.register(PictureCollectionViewCell.self,
+                                      forCellWithReuseIdentifier: Constants.cellReuseIdentifier)
         layout.delegate = self
         setupBackgroundColors()
         setupSubviews()
+        collectionView?.translatesAutoresizingMaskIntoConstraints = false
         setupConstraints()
     }
     
@@ -53,14 +57,13 @@ class HomeCollectionViewController: UICollectionViewController {
     
     private func setupConstraints() {
         if let (cv, tb) = (collectionView, tabBarController?.tabBar) as? (UICollectionView, UITabBar) {
-            cv.translatesAutoresizingMaskIntoConstraints = false
-            searchFieldView.translatesAutoresizingMaskIntoConstraints = false
             let margins = view.layoutMarginsGuide
             let constraints = [
                 searchFieldView.topAnchor.constraint(equalTo: margins.topAnchor),
                 searchFieldView.leadingAnchor.constraint(equalTo: margins.leadingAnchor),
-                searchFieldView.bottomAnchor.constraint(equalTo: cv.topAnchor,
-                                                        constant: -Constants.spaceBetweenSearchFieldViewAndCollectionView),
+                searchFieldView.bottomAnchor
+                    .constraint(equalTo: cv.topAnchor,
+                                constant: -Constants.spaceBetweenSearchFieldViewAndCollectionView),
                 searchFieldView.trailingAnchor.constraint(equalTo: margins.trailingAnchor),
                 cv.leadingAnchor.constraint(equalTo: margins.leadingAnchor),
                 cv.bottomAnchor.constraint(equalTo: margins.bottomAnchor,
@@ -86,10 +89,11 @@ class HomeCollectionViewController: UICollectionViewController {
         return Picture.all.count
     }
 
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    override func collectionView(_ collectionView: UICollectionView,
+                                 cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PictureCollectionViewCell", for: indexPath)
         if let pictureCell = cell as? PictureCollectionViewCell {
-            pictureCell.imageView.image = UIImage(imageLiteralResourceName: Picture.all[indexPath.item].imageName)
+            pictureCell.imageView.image = UIImage(named: Picture.all[indexPath.item].imageName)
         }
         return cell
     }
@@ -110,9 +114,10 @@ extension HomeCollectionViewController: PictureCollectionViewLayoutDelegate {
     func collectionView(_ collectionView: UICollectionView, heightForPhotoAtIndexPath indexPath: IndexPath) -> CGFloat {
         var cellWidth: CGFloat = 0
         if let collectionViewWidth = self.collectionView?.bounds.width {
-            cellWidth = collectionViewWidth / CGFloat(layout.numberOfColumns) - 2 * PictureCollectionViewLayout.Constants.cellPadding
+            cellWidth = collectionViewWidth / CGFloat(layout.numberOfColumns)
+                - 2 * PictureCollectionViewLayout.Constants.cellPadding
         }
-        let image = UIImage(imageLiteralResourceName: Picture.all[indexPath.item].imageName)
+        let image = UIImage(named: Picture.all[indexPath.item].imageName) ?? UIImage()
         let ratio = image.size.height / image.size.width
         return cellWidth * ratio + PictureCollectionViewCell.Constants.buttonHeight
     }

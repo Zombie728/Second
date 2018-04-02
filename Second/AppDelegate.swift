@@ -14,24 +14,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
         func setupTabBarProperties(forTabBarController tabBarController: UITabBarController) {
             tabBarController.tabBar.tintColor = Constants.tabBarSelectedImageColor
-            UITabBarItem.appearance().setTitleTextAttributes([.foregroundColor : Constants.tabBarSelectedTextColor], for: .selected)
-            tabBarController.tabBar.backgroundColor = Constants.tabBarBackgroundColor.withAlphaComponent(Constants.tabBarBackgroundAlpha)
+            UITabBarItem.appearance().setTitleTextAttributes([.foregroundColor : Constants.tabBarSelectedTextColor],
+                                                             for: .selected)
+            tabBarController.tabBar.backgroundColor = Constants.tabBarBackgroundColor
+                .withAlphaComponent(Constants.tabBarBackgroundAlpha)
             tabBarController.tabBar.backgroundImage = UIImage()
             tabBarController.tabBar.shadowImage = UIImage()
         }
         
         func viewControllersForMainTabBar() -> [UIViewController] {
-            var viewControllers = [UIViewController]()
-            var viewController: UIViewController = HomeCollectionViewController(collectionViewLayout: PictureCollectionViewLayout())
+            var viewControllers: [UIViewController] = []
+            var viewController: UIViewController
+                = HomeCollectionViewController(collectionViewLayout: PictureCollectionViewLayout())
             viewControllers.append(viewController)
             for controllerTitle in Constants.controllersTitles {
                 viewController = UIViewController()
                 viewController.view.backgroundColor = Constants.backgroundColorOfViews
-                viewController.tabBarItem = UITabBarItem(title: controllerTitle, image: UIImage(imageLiteralResourceName: controllerTitle), selectedImage: nil)
+                viewController.tabBarItem = UITabBarItem(title: controllerTitle,
+                                                         image: UIImage(imageLiteralResourceName: controllerTitle),
+                                                         selectedImage: nil)
                 viewControllers.append(viewController)
             }
             return viewControllers

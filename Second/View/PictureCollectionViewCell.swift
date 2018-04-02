@@ -12,12 +12,14 @@ class PictureCollectionViewCell: UICollectionViewCell {
     
     lazy var imageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = Constants.imageViewCornerRadius
         return imageView
     }()
     lazy var buttonOfActions: UIButton = {
         let buttonOfActions = UIButton()
+        buttonOfActions.translatesAutoresizingMaskIntoConstraints = false
         buttonOfActions.titleLabel?.font = UIFont.systemFont(ofSize: Constants.buttonFontSize)
         buttonOfActions.setTitle(Constants.buttonTitle, for: .normal)
         buttonOfActions.setTitleColor(Constants.buttonTitleColor, for: .normal)
@@ -45,8 +47,6 @@ class PictureCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupConstraints() {
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        buttonOfActions.translatesAutoresizingMaskIntoConstraints = false
         let constraints = [
             imageView.topAnchor.constraint(equalTo: topAnchor),
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor),

@@ -12,17 +12,20 @@ class SearchFieldView: UIView {
 
     lazy var textField: UITextField = {
         let textField = UITextField()
+        textField.translatesAutoresizingMaskIntoConstraints = false
         textField.placeholder = Constants.textFieldPlaceholder
         return textField
     }()
     lazy var searchIcon: UIImageView = {
         let searchIcon = UIImageView()
-        searchIcon.image = UIImage(imageLiteralResourceName: Constants.searchIconImageName)
+        searchIcon.translatesAutoresizingMaskIntoConstraints = false
+        searchIcon.image = UIImage(named: Constants.searchIconImageName)
         return searchIcon
     }()
     lazy var cameraIcon: UIImageView = {
         let cameraIcon = UIImageView()
-        cameraIcon.image = UIImage(imageLiteralResourceName: Constants.cameraIconImageName)
+        cameraIcon.translatesAutoresizingMaskIntoConstraints = false
+        cameraIcon.image = UIImage(named: Constants.cameraIconImageName)
         return cameraIcon
     }()
 
@@ -48,9 +51,6 @@ class SearchFieldView: UIView {
     }
     
     private func setupConstraints() {
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        searchIcon.translatesAutoresizingMaskIntoConstraints = false
-        cameraIcon.translatesAutoresizingMaskIntoConstraints = false
         let margins = layoutMarginsGuide
         let constraints = [
             searchIcon.topAnchor.constraint(equalTo: margins.topAnchor),

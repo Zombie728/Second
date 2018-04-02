@@ -17,7 +17,7 @@ class PictureCollectionViewLayout: UICollectionViewLayout {
 
     weak var delegate: PictureCollectionViewLayoutDelegate?
     var numberOfColumns = 0
-    private var cache = [UICollectionViewLayoutAttributes]()
+    private var cache: [UICollectionViewLayoutAttributes] = []
     private var contentHeight: CGFloat = 0
     
     private var contentWidth: CGFloat {
@@ -36,11 +36,12 @@ class PictureCollectionViewLayout: UICollectionViewLayout {
         guard cache.isEmpty == true, let collectionView = collectionView else {
             return
         }
-        numberOfColumns = delegate?.traitCollection.horizontalSizeClass == .regular ? Constants.numberOfColumnsForRegularWidth : Constants.numberOfColumnsForCompactWidth
-        let columnWidth = contentWidth / CGFloat(numberOfColumns)
-        var xOffset = [CGFloat]()
+        numberOfColumns = delegate?.traitCollection.horizontalSizeClass == .regular ?
+            Constants.numberOfColumnsForRegularWidth : Constants.numberOfColumnsForCompactWidth
+        let columnWidth = (contentWidth + Constants.cellPadding * 2) / CGFloat(numberOfColumns)
+        var xOffset: [CGFloat] = []
         for column in 0 ..< numberOfColumns {
-            xOffset.append(CGFloat(column) * columnWidth)
+            xOffset.append(CGFloat(column) * columnWidth - Constants.cellPadding)
         }
         var column = 0
         var yOffset = [CGFloat](repeating: 0, count: numberOfColumns)
@@ -60,11 +61,9 @@ class PictureCollectionViewLayout: UICollectionViewLayout {
     }
     
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        var visibleLayoutAttributes = [UICollectionViewLayoutAttributes]()
-        for attributes in cache {
-            if attributes.frame.intersects(rect) {
-                visibleLayoutAttributes.append(attributes)
-            }
+        var visibleLayoutAttributes: [UICollectionViewLayoutAttributes] = []
+        for attributes in cache where attributes.frame.intersects(rect) {
+            visibleLayoutAttributes.append(attributes)
         }
         return visibleLayoutAttributes
     }
@@ -90,8 +89,8 @@ class PictureCollectionViewLayout: UICollectionViewLayout {
 extension Array where Element : Comparable {
     func indexOfMinimum() -> Int {
         var indexOfMinimum = 0
-        for (index, element) in self.enumerated() {
-            if element < self[indexOfMinimum] { indexOfMinimum = index }
+        for (index, element) in self.enumerated() where element < self[indexOfMinimum] {
+            indexOfMinimum = index
         }
         return indexOfMinimum
     }
